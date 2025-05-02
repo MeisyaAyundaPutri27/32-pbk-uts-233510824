@@ -1,29 +1,43 @@
 <template>
-  <div class="app">
-    <h1>Daftar Kegiatan</h1>
+  <div class="outer-wrapper">
+    <div class="container">
+      <h1>📋 Daftar Kegiatan</h1>
 
-    <form @submit.prevent="addTodo" class="form">
-      <input v-model="newTodo" type="text" placeholder="Tambah kegiatan..." />
-      <button type="submit">Tambah</button>
-    </form>
+      <form @submit.prevent="addTodo" class="form">
+        <div class="input-wrapper">
+          <input v-model="newTodo" type="text" placeholder="Masukkan kegiatan..." />
+        </div>
+        <div class="button-wrapper">
+          <button type="submit">Tambah</button>
+        </div>
+      </form>
 
-    <select v-model="filter" class="filter">
-      <option value="all">Semua</option>
-      <option value="pending">Belum Selesai</option>
-      <option value="completed">Selesai</option>
-    </select>
+      <div class="dropdown-filter">
+        <select v-model="filter">
+          <option value="all">📄 Semua Kegiatan</option>
+          <option value="pending">⏳ Belum Selesai</option>
+          <option value="completed">✅ Sudah Selesai</option>
+        </select>
+      </div>
 
-    <ul>
-      <li
-        v-for="(todo, index) in filteredTodos"
-        :key="index"
-        :class="{ done: todo.completed }"
-      >
-        <input type="checkbox" v-model="todo.completed" />
-        <span>{{ todo.text }}</span>
-        <button @click="removeTodo(index)">❌</button>
-      </li>
-    </ul>
+      <ul>
+        <li
+          v-for="(todo, index) in filteredTodos"
+          :key="'todo-' + index"
+          :class="{ done: todo.completed }"
+        >
+          <input type="checkbox" v-model="todo.completed" />
+          <span>{{ todo.text }}</span>
+          <button class="delete" @click="removeTodo(index)">
+            🗑️ <!-- Ikon Tempat Sampah -->
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <footer class="footer">
+      <marquee behavior="scroll" direction="left">© 2025 MEISYA AYUNDA PUTRI</marquee>
+    </footer>
   </div>
 </template>
 
@@ -41,7 +55,7 @@ const todos = ref([
 
 const addTodo = () => {
   const text = newTodo.value.trim()
-  if (!text) return
+  if (text === '') return
   todos.value.push({ text, completed: false })
   newTodo.value = ''
 }
@@ -62,84 +76,157 @@ const filteredTodos = computed(() => {
 </script>
 
 <style scoped>
-.app {
-  max-width: 500px;
-  margin: 40px auto;
-  padding: 20px;
-  background: #fff;
-  border-radius: 10px;
-  font-family: sans-serif;
-  border: 1px solid #eee;
+.outer-wrapper {
+  background: linear-gradient(to bottom right, #ffe0f0, #f3e8ff);
+  padding: 40px 20px;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+  padding: 24px;
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  box-shadow: 0 12px 30px rgba(214, 51, 132, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  font-family: 'Segoe UI', sans-serif;
 }
 
 h1 {
   text-align: center;
   color: #d63384;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
+  font-size: 48px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(214, 51, 132, 0.2);
 }
 
 .form {
   display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.input-wrapper {
+  flex: 1;
 }
 
 input[type="text"] {
-  flex: 1;
-  padding: 8px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  width: 100%;
+  padding: 12px 20px;
+  font-size: 16px;
+  border: 2px solid #f783ac;
+  border-radius: 12px;
+  background: rgba(255, 245, 249, 0.8);
+  outline: none;
+  height: 48px;
+  box-sizing: border-box;
+  box-shadow: inset 1px 1px 3px rgba(0,0,0,0.05);
+}
+
+input[type="text"]:focus {
+  border-color: #da77f2;
+  background-color: rgba(252, 239, 249, 0.9);
+}
+
+.button-wrapper {
+  flex-shrink: 0;
 }
 
 button {
-  padding: 8px 12px;
-  background-color: #d63384;
+  background: linear-gradient(to right, #f783ac, #da77f2);
   color: white;
+  font-weight: bold;
   border: none;
-  border-radius: 6px;
+  padding: 0 24px;
+  height: 48px;
+  font-size: 16px;
+  border-radius: 12px;
   cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(218, 119, 242, 0.4);
 }
 
 button:hover {
-  background-color: #c2255c;
+  transform: scale(1.05);
 }
 
-.filter {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 12px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+.dropdown-filter {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+select {
+  padding: 10px 14px;
+  font-size: 16px;
+  border-radius: 12px;
+  border: 2px solid #f783ac;
+  background-color: rgba(255, 240, 246, 0.8);
+  color: #5f3dc4;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 6px rgba(247, 131, 172, 0.2);
 }
 
 ul {
   list-style: none;
   padding: 0;
+  margin-top: 10px;
 }
 
 li {
   display: flex;
   align-items: center;
-  padding: 8px;
-  border-bottom: 1px solid #eee;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.8);
+  margin-bottom: 10px;
+  border-left: 5px solid #da77f2;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+}
+
+li.done {
+  background-color: #e9ecef;
+  border-left-color: #adb5bd;
 }
 
 li.done span {
   text-decoration: line-through;
-  color: #999;
+  color: #868e96;
 }
 
 li span {
   flex: 1;
-  margin-left: 8px;
+  margin-left: 10px;
+  font-size: 16px;
 }
 
-li button {
-  background: none;
+.delete {
+  background: transparent;
   border: none;
-  color: #d63384;
-  font-size: 16px;
   cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.delete i {
+  font-size: 18px;
+  color: #d63384;
+}
+
+.delete:hover i {
+  color: #c92a2a;
+}
+
+.footer {
+  margin-top: 30px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 14px;
+  color: #d63384;
+  padding: 10px;
 }
 </style>
